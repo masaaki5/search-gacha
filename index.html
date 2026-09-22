@@ -56,7 +56,7 @@ button {
     color: white;
 }
 
-/* レア度の色 */
+/* レアリティの色 */
 .N {
     color: white;
 }
@@ -76,6 +76,46 @@ button {
 .UR {
     color: gold;
 }
+
+
+/* =========================
+   スマホ用
+   ========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px 8px;
+    }
+
+    h1 {
+        font-size: 21px;
+    }
+
+    #result {
+        padding: 39px 10px;
+        margin: 20px auto;
+        border-radius: 13px;
+        border-width: 3px;
+    }
+
+    #topic {
+        font-size: 21px;
+        margin-bottom: 13px;
+    }
+
+    #rarity {
+        font-size: 18px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 12px 20px;
+        margin: 7px;
+        border-radius: 10px;
+    }
+}
+
 </style>
 </head>
 
@@ -93,6 +133,7 @@ button {
 <br>
 
 <button id="searchButton" onclick="searchGoogle()">🔎 Googleで検索</button>
+
 
 <script>
 
@@ -146,34 +187,38 @@ const subjects = [
     "検索すると面白いもの"
 ];
 
-let topics = [];
+
+/* 30カテゴリー × 10テーマ = 300個 */
+
+let topicTexts = [];
 
 for (let i = 0; i < categories.length; i++) {
+
     for (let j = 0; j < subjects.length; j++) {
-        topics.push(
+
+        topicTexts.push(
             categories[i] + "の" + subjects[j]
         );
+
     }
 }
 
-/*
-300個を
-N  180個
-R   75個
-SR  30個
-SSR 12個
-UR   3個
-に設定
 
-→ 全体の割合
-N   60%
-R   25%
-SR  10%
-SSR  4%
-UR   1%
-*/
+/* =========================
+   レアリティ設定
+   ========================= */
 
 const rarities = [];
+
+/*
+N   180個
+R    75個
+SR   30個
+SSR  12個
+UR    3個
+
+合計300個
+*/
 
 for (let i = 0; i < 180; i++) {
     rarities.push("N");
@@ -195,11 +240,18 @@ for (let i = 0; i < 3; i++) {
     rarities.push("UR");
 }
 
-topics = topics.map(function(text, index) {
+
+/* =========================
+   お題データ作成
+   ========================= */
+
+const topics = topicTexts.map(function(text, index) {
+
     return {
         text: text,
         rarity: rarities[index]
     };
+
 });
 
 
@@ -208,59 +260,97 @@ let lastTopic = null;
 
 
 /* =========================
+   レアリティ抽選
+   ========================= */
+
+function getRarity() {
+
+    const r = Math.random() * 100;
+
+    if (r < 60) {
+        return "N";
+    }
+
+    if (r < 85) {
+        return "R";
+    }
+
+    if (r < 95) {
+        return "SR";
+    }
+
+    if (r < 99) {
+        return "SSR";
+    }
+
+    return "UR";
+}
+
+
+/* =========================
    ガチャ
    ========================= */
 
 function gacha() {
 
-    let rarity;
-
-    const r = Math.random() * 100;
-
-    if (r < 60) {
-        rarity = "N";
-    } else if (r < 85) {
-        rarity = "R";
-    } else if (r < 95) {
-        rarity = "SR";
-    } else if (r < 99) {
-        rarity = "SSR";
-    } else {
-        rarity = "UR";
-    }
+    const rarity = getRarity();
 
     let candidates = topics.filter(function(topic) {
+
         return topic.rarity === rarity;
+
     });
 
-    /*
-    前回と同じお題が連続しないようにする
-    */
-    let available = candidates.filter(function(topic) {
-        return topic.text !== lastTopic;
-    });
 
-    if (available.length === 0) {
-        available = candidates;
+    /* 前回と同じお題を避ける */
+
+    let availableCandidates =
+        candidates.filter(function(topic) {
+
+            return topic.text !== lastTopic;
+
+        });
+
+
+    if (availableCandidates.length === 0) {
+
+        availableCandidates = candidates;
+
     }
 
+
     const selected =
-        available[Math.floor(Math.random() * available.length)];
+        availableCandidates[
+            Math.floor(
+                Math.random() *
+                availableCandidates.length
+            )
+        ];
+
 
     currentTopic = selected;
     lastTopic = selected.text;
 
+
+    /* お題表示 */
+
     document.getElementById("topic").textContent =
         selected.text;
+
+
+    /* レアリティ表示 */
 
     const rarityElement =
         document.getElementById("rarity");
 
+
     rarityElement.textContent =
         "【" + selected.rarity + "】";
 
+
     rarityElement.className =
         selected.rarity;
+
 }
 
 
@@ -271,20 +361,25 @@ function gacha() {
 function searchGoogle() {
 
     if (currentTopic === null) {
+
         alert("先にガチャを回してください！");
+
         return;
     }
 
+
     const query =
         encodeURIComponent(currentTopic.text);
+
 
     window.open(
         "https://www.google.com/search?q=" + query,
         "_blank"
     );
+
 }
 
 </script>
 
 </body>
-</html>>
+</html>
