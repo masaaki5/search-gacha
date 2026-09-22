@@ -24,23 +24,52 @@ body {
     color: white;
     text-align: center;
     font-family: sans-serif;
-    padding: 40px 10px;
+
+    padding: 0 10px 40px;
+
     box-sizing: border-box;
 }
 
-h1 {
-    font-size: 36px;
-    margin-bottom: 30px;
+
+/* =========================
+   上部スワイプ説明
+========================= */
+
+#topSwipeText {
+    font-size: 16px;
+    color: white;
+    opacity: 0.45;
+
+    padding-top: 18px;
+    margin-bottom: 25px;
 }
 
+
+/* =========================
+   タイトル
+========================= */
+
+h1 {
+    font-size: 36px;
+    margin: 0 0 30px;
+}
+
+
+/* =========================
+   検索ワード
+========================= */
+
 #result {
+    position: relative;
+
     background: #222;
     border: 3px solid #555;
     border-radius: 20px;
 
     height: 180px;
 
-    padding: 30px 15px;
+    padding: 30px 45px 30px 15px;
+
     margin: 30px auto;
 
     max-width: 900px;
@@ -52,23 +81,6 @@ h1 {
     justify-content: center;
 
     overflow: hidden;
-}
-
-#topic {
-    font-size: 30px;
-    font-weight: bold;
-    line-height: 1.5;
-    width: 100%;
-}
-
-button {
-    font-size: 22px;
-
-    padding: 18px 28px;
-    margin: 10px;
-
-    border: none;
-    border-radius: 14px;
 
     cursor: pointer;
 
@@ -80,22 +92,62 @@ button {
     touch-action: manipulation;
 }
 
-#reloadButton {
-    background: #555;
-    color: white;
+
+#topic {
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 1.5;
+
+    width: 100%;
 }
 
-#searchButton {
-    background: #4285f4;
+
+/* =========================
+   外部リンクマーク
+========================= */
+
+#externalIcon {
+    position: absolute;
+
+    right: 12px;
+    bottom: 8px;
+
+    font-size: 22px;
+
     color: white;
+    opacity: 0.55;
+
+    pointer-events: none;
 }
 
-#swipeText {
-    font-size: 18px;
-    color: #aaa;
-    margin-top: 35px;
-    line-height: 1.8;
+
+/* =========================
+   長押し説明
+========================= */
+
+#longPressText {
+    font-size: 16px;
+
+    color: white;
+
+    opacity: 0.45;
+
+    margin-top: 20px;
+
+    -webkit-user-select: none;
+    user-select: none;
+
+    -webkit-touch-callout: none;
+
+    touch-action: manipulation;
+
+    cursor: pointer;
 }
+
+
+/* =========================
+   スマホ
+========================= */
 
 @media screen and (max-width: 600px) {
 
@@ -103,22 +155,23 @@ button {
         font-size: 30px;
     }
 
+
     #result {
         height: 170px;
-        padding: 25px 12px;
+
+        padding: 25px 42px 25px 12px;
+
         margin: 25px auto;
     }
+
 
     #topic {
         font-size: 26px;
     }
 
-    button {
-        font-size: 20px;
-        padding: 16px 24px;
-    }
 
-    #swipeText {
+    #topSwipeText,
+    #longPressText {
         font-size: 16px;
     }
 
@@ -130,8 +183,28 @@ button {
 
 <body>
 
-<h1>🎰 ランダム検索</h1>
 
+<!-- =========================
+     上部
+========================= -->
+
+<div id="topSwipeText">
+    ⇩ 下にスワイプしてリロード
+</div>
+
+
+<!-- =========================
+     タイトル
+========================= -->
+
+<h1>
+    🎰 ランダム検索
+</h1>
+
+
+<!-- =========================
+     検索ワード
+========================= -->
 
 <div id="result">
 
@@ -139,27 +212,18 @@ button {
         ？？？
     </div>
 
+    <div id="externalIcon">
+        ↗
+    </div>
+
 </div>
 
 
-<button id="reloadButton">
-    🔄 リロード
-</button>
+<!-- =========================
+     長押し操作
+========================= -->
 
-
-<br>
-
-
-<button id="searchButton"
-        onclick="searchGoogle()">
-
-    🔎 Googleで検索
-
-</button>
-
-
-<div id="swipeText">
-    ⇩ 下にスワイプしてリロード<br>
+<div id="longPressText">
     🔄 リロード長押しでランダム
 </div>
 
@@ -346,7 +410,6 @@ function vibrate() {
 
 /* =========================
    ランダムお題
-   通常用
 ========================= */
 
 function randomTopic() {
@@ -376,226 +439,6 @@ function randomTopic() {
     ).textContent = currentTopic;
 
 }
-
-
-/* =========================
-   通常タップ
-   即時＋振動
-========================= */
-
-function reloadOnce() {
-
-    randomTopic();
-
-    vibrate();
-
-}
-
-
-/* =========================
-   長押し中のランダム
-   振動なし
-========================= */
-
-function randomWithoutVibration() {
-
-    randomTopic();
-
-}
-
-
-/* =========================
-   スワイプ
-   0.2秒後＋振動
-========================= */
-
-let swipeTimer = null;
-
-
-function delayedSwipeReload() {
-
-    if (swipeTimer) {
-
-        clearTimeout(
-            swipeTimer
-        );
-
-    }
-
-
-    swipeTimer = setTimeout(
-
-        function() {
-
-            randomTopic();
-
-            vibrate();
-
-            swipeTimer = null;
-
-        },
-
-        200
-
-    );
-
-}
-
-
-/* =========================
-   長押し
-   0.2秒で開始
-========================= */
-
-const reloadButton =
-    document.getElementById(
-        "reloadButton"
-    );
-
-
-let longPressTimer = null;
-
-let repeatTimer = null;
-
-let longPressTriggered = false;
-
-
-function startLongPress() {
-
-    longPressTriggered = false;
-
-
-    longPressTimer = setTimeout(
-
-        function() {
-
-            longPressTriggered = true;
-
-
-            /*
-               長押し開始時に
-               1回だけ振動
-            */
-
-            vibrate();
-
-
-            /*
-               最初のお題変更
-            */
-
-            randomWithoutVibration();
-
-
-            /*
-               0.15秒ごとに
-               振動なしでランダム
-            */
-
-            repeatTimer = setInterval(
-
-                function() {
-
-                    randomWithoutVibration();
-
-                },
-
-                150
-
-            );
-
-        },
-
-        200
-
-    );
-
-}
-
-
-function stopLongPress() {
-
-    if (longPressTimer) {
-
-        clearTimeout(
-            longPressTimer
-        );
-
-        longPressTimer = null;
-
-    }
-
-
-    if (repeatTimer) {
-
-        clearInterval(
-            repeatTimer
-        );
-
-        repeatTimer = null;
-
-    }
-
-}
-
-
-/* =========================
-   リロードボタン操作
-========================= */
-
-reloadButton.addEventListener(
-
-    "pointerdown",
-
-    function(e) {
-
-        e.preventDefault();
-
-        startLongPress();
-
-    }
-
-);
-
-
-reloadButton.addEventListener(
-
-    "pointerup",
-
-    function(e) {
-
-        e.preventDefault();
-
-        stopLongPress();
-
-
-        /*
-           長押しではなかったら
-           即時に1回＋振動
-        */
-
-        if (!longPressTriggered) {
-
-            reloadOnce();
-
-        }
-
-    }
-
-);
-
-
-reloadButton.addEventListener(
-
-    "pointercancel",
-
-    function() {
-
-        stopLongPress();
-
-    }
-
-);
 
 
 /* =========================
@@ -630,6 +473,176 @@ function searchGoogle() {
 
 
 /* =========================
+   検索ワードタップ
+========================= */
+
+const result =
+    document.getElementById(
+        "result"
+    );
+
+
+result.addEventListener(
+
+    "click",
+
+    function() {
+
+        searchGoogle();
+
+    }
+
+);
+
+
+/* =========================
+   長押し
+========================= */
+
+const longPressText =
+    document.getElementById(
+        "longPressText"
+    );
+
+
+let longPressTimer = null;
+
+let repeatTimer = null;
+
+let longPressTriggered = false;
+
+
+/* 長押し開始 */
+
+function startLongPress() {
+
+    longPressTriggered = false;
+
+
+    longPressTimer = setTimeout(
+
+        function() {
+
+            longPressTriggered = true;
+
+
+            /*
+               長押し開始時に
+               1回だけ振動
+            */
+
+            vibrate();
+
+
+            /*
+               最初のお題変更
+            */
+
+            randomTopic();
+
+
+            /*
+               0.15秒ごとに
+               振動なしで変更
+            */
+
+            repeatTimer = setInterval(
+
+                function() {
+
+                    randomTopic();
+
+                },
+
+                150
+
+            );
+
+        },
+
+        200
+
+    );
+
+}
+
+
+/* 長押し終了 */
+
+function stopLongPress() {
+
+    if (longPressTimer) {
+
+        clearTimeout(
+            longPressTimer
+        );
+
+        longPressTimer = null;
+
+    }
+
+
+    if (repeatTimer) {
+
+        clearInterval(
+            repeatTimer
+        );
+
+        repeatTimer = null;
+
+    }
+
+}
+
+
+/* =========================
+   長押し操作
+========================= */
+
+longPressText.addEventListener(
+
+    "pointerdown",
+
+    function(e) {
+
+        e.preventDefault();
+
+        startLongPress();
+
+    }
+
+);
+
+
+longPressText.addEventListener(
+
+    "pointerup",
+
+    function(e) {
+
+        e.preventDefault();
+
+        stopLongPress();
+
+    }
+
+);
+
+
+longPressText.addEventListener(
+
+    "pointercancel",
+
+    function() {
+
+        stopLongPress();
+
+    }
+
+);
+
+
+/* =========================
    下スワイプ
 ========================= */
 
@@ -641,13 +654,15 @@ let swipeTriggered = false;
 
 
 /*
-   元の約75%
+   スワイプ距離
 */
 
 const swipeDistance = 45;
 
 
-/* タッチ開始 */
+/*
+   タッチ開始
+*/
 
 document.addEventListener(
 
@@ -682,7 +697,9 @@ document.addEventListener(
 );
 
 
-/* タッチ終了 */
+/*
+   タッチ終了
+*/
 
 document.addEventListener(
 
@@ -738,7 +755,24 @@ document.addEventListener(
 
             swipeTriggered = true;
 
-            delayedSwipeReload();
+
+            /*
+               0.1秒後
+            */
+
+            setTimeout(
+
+                function() {
+
+                    randomTopic();
+
+                    vibrate();
+
+                },
+
+                100
+
+            );
 
         }
 
