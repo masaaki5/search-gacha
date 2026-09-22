@@ -346,6 +346,7 @@ function vibrate() {
 
 /* =========================
    ランダムお題
+   通常用
 ========================= */
 
 function randomTopic() {
@@ -374,6 +375,17 @@ function randomTopic() {
         "topic"
     ).textContent = currentTopic;
 
+}
+
+
+/* =========================
+   通常タップ
+   即時＋振動
+========================= */
+
+function reloadOnce() {
+
+    randomTopic();
 
     vibrate();
 
@@ -381,11 +393,11 @@ function randomTopic() {
 
 
 /* =========================
-   通常タップ
-   即時
+   長押し中のランダム
+   振動なし
 ========================= */
 
-function delayedTapReload() {
+function randomWithoutVibration() {
 
     randomTopic();
 
@@ -394,7 +406,7 @@ function delayedTapReload() {
 
 /* =========================
    スワイプ
-   0.2秒後
+   0.2秒後＋振動
 ========================= */
 
 let swipeTimer = null;
@@ -416,6 +428,8 @@ function delayedSwipeReload() {
         function() {
 
             randomTopic();
+
+            vibrate();
 
             swipeTimer = null;
 
@@ -459,21 +473,30 @@ function startLongPress() {
 
 
             /*
-               最初のランダム
+               長押し開始時に
+               1回だけ振動
             */
 
-            randomTopic();
+            vibrate();
 
 
             /*
-               0.15秒ごとにランダム
+               最初のお題変更
+            */
+
+            randomWithoutVibration();
+
+
+            /*
+               0.15秒ごとに
+               振動なしでランダム
             */
 
             repeatTimer = setInterval(
 
                 function() {
 
-                    randomTopic();
+                    randomWithoutVibration();
 
                 },
 
@@ -548,12 +571,12 @@ reloadButton.addEventListener(
 
         /*
            長押しではなかったら
-           即時に1回
+           即時に1回＋振動
         */
 
         if (!longPressTriggered) {
 
-            delayedTapReload();
+            reloadOnce();
 
         }
 
