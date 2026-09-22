@@ -3,50 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>検索ガチャ</title>
+
+<title>🎰 ランダム検索</title>
 
 <style>
+
 body {
     background: #111;
     color: white;
     text-align: center;
     font-family: sans-serif;
-    padding: 80px 20px;
+    padding: 40px 10px;
+    margin: 0;
 }
 
 h1 {
-    font-size: 48px;
+    font-size: 36px;
+    margin-bottom: 30px;
 }
 
 #result {
     background: #222;
-    border: 4px solid #555;
-    border-radius: 30px;
-    padding: 100px 20px;
-    margin: 60px auto;
+    border: 3px solid #555;
+    border-radius: 20px;
+    padding: 50px 15px;
+    margin: 30px auto;
     max-width: 900px;
+    box-sizing: border-box;
 }
 
 #topic {
-    font-size: 56px;
+    font-size: 30px;
     font-weight: bold;
-    margin-bottom: 30px;
-}
-
-#rarity {
-    font-size: 44px;
+    line-height: 1.5;
 }
 
 button {
-    font-size: 40px;
-    padding: 30px 60px;
-    margin: 20px;
+    font-size: 22px;
+    padding: 18px 28px;
+    margin: 10px;
     border: none;
-    border-radius: 20px;
+    border-radius: 14px;
     cursor: pointer;
 }
 
-#gachaButton {
+#reloadButton {
     background: #555;
     color: white;
 }
@@ -56,94 +57,79 @@ button {
     color: white;
 }
 
-/* レアリティの色 */
-.N {
-    color: white;
+#swipeText {
+    font-size: 18px;
+    color: #aaa;
+    margin-top: 35px;
 }
 
-.R {
-    color: #4285f4;
-}
-
-.SR {
-    color: red;
-}
-
-.SSR {
-    color: silver;
-}
-
-.UR {
-    color: gold;
-}
-
-
-/* =========================
-   スマホ用
-   現在の約半分
-   ========================= */
-
-@media (max-width: 600px) {
-
-    body {
-        padding: 10px 5px;
-    }
+@media screen and (max-width: 600px) {
 
     h1 {
-        font-size: 16px;
-        margin: 10px 0;
+        font-size: 30px;
     }
 
     #result {
-        padding: 20px 6px;
-        margin: 15px auto;
-        border-radius: 10px;
-        border-width: 2px;
+        padding: 45px 12px;
+        margin: 25px auto;
     }
 
     #topic {
-        font-size: 16px;
-        margin-bottom: 8px;
-    }
-
-    #rarity {
-        font-size: 14px;
+        font-size: 26px;
     }
 
     button {
-        font-size: 12px;
-        padding: 8px 12px;
-        margin: 5px;
-        border-radius: 7px;
+        font-size: 20px;
+        padding: 16px 24px;
     }
+
+    #swipeText {
+        font-size: 16px;
+    }
+
 }
 
 </style>
 </head>
 
+
 <body>
 
-<h1>🎰 検索ガチャ</h1>
+<h1>🎰 ランダム検索</h1>
+
 
 <div id="result">
+
     <div id="topic">？？？</div>
-    <div id="rarity">---</div>
+
 </div>
 
-<button id="gachaButton" onclick="gacha()">🎲 ガチャを回す</button>
+
+<button id="reloadButton" onclick="randomTopic()">
+    🔄 リロード
+</button>
 
 <br>
 
-<button id="searchButton" onclick="searchGoogle()">🔎 Googleで検索</button>
+<button id="searchButton" onclick="searchGoogle()">
+    🔎 Googleで検索
+</button>
+
+
+<div id="swipeText">
+    ⇩ 下にスワイプしてリロード
+</div>
+
 
 
 <script>
 
 /* =========================
-   お題300個
-   ========================= */
+   これまでのお題 300個
+========================= */
 
 const categories = [
+
     "身近な科学",
     "宇宙",
     "動物",
@@ -154,6 +140,7 @@ const categories = [
     "歴史",
     "地理",
     "日本",
+
     "世界",
     "文化",
     "音楽",
@@ -164,6 +151,7 @@ const categories = [
     "テクノロジー",
     "インターネット",
     "乗り物",
+
     "建物",
     "仕事",
     "お金",
@@ -174,9 +162,12 @@ const categories = [
     "不思議",
     "未来",
     "ランキング"
+
 ];
 
+
 const subjects = [
+
     "意外な事実",
     "知られざる歴史",
     "面白い仕組み",
@@ -187,185 +178,152 @@ const subjects = [
     "最も○○なもの",
     "身近だけど知らないこと",
     "検索すると面白いもの"
+
 ];
 
 
-/* 30カテゴリー × 10テーマ = 300個 */
+let topics = [];
 
-let topicTexts = [];
 
 for (let i = 0; i < categories.length; i++) {
 
     for (let j = 0; j < subjects.length; j++) {
 
-        topicTexts.push(
+        topics.push(
             categories[i] + "の" + subjects[j]
         );
 
     }
+
 }
 
 
 /* =========================
-   レアリティ設定
-   ========================= */
+   新しいお題 50個
+========================= */
 
-const rarities = [];
+const extraTopics = [
 
-/*
-N   180個
-R    75個
-SR   30個
-SSR  12個
-UR    3個
+    "コンビニの面白い商品",
+    "コンビニ商品の意外な開発秘話",
+    "スーパーで売っている珍しい商品",
+    "世界の変わったお菓子",
+    "日本のご当地お菓子",
+    "世界の変わった飲み物",
+    "珍しいアイスクリーム",
+    "変わったインスタント食品",
+    "世界の変わったパン",
+    "意外な組み合わせの食べ物",
 
-合計300個
-*/
+    "世界の変わったホテル",
+    "泊まってみたい珍しいホテル",
+    "世界の面白い観光地",
+    "一度は見てみたい珍しい場所",
+    "世界の変わった遊園地",
+    "珍しいテーマパーク",
+    "世界の面白い駅",
+    "変わった形の駅",
+    "世界の珍しい空港",
+    "飛行機の意外な仕組み",
 
-for (let i = 0; i < 180; i++) {
-    rarities.push("N");
-}
+    "企業ロゴの意外な意味",
+    "有名ブランドの名前の由来",
+    "商品の名前の由来",
+    "有名商品の誕生秘話",
+    "ロングセラー商品の秘密",
+    "昔の家電と現在の家電の違い",
+    "昔の携帯電話の面白い機能",
+    "意外と高価な家電",
+    "変わった形の家電",
+    "昔流行した便利グッズ",
 
-for (let i = 0; i < 75; i++) {
-    rarities.push("R");
-}
+    "世界の珍しいファッション",
+    "昔のファッションの流行",
+    "服の意外な名前の由来",
+    "靴の意外な歴史",
+    "帽子の面白い歴史",
+    "珍しい文房具",
+    "文房具の意外な発明",
+    "世界の変わった筆記具",
+    "変わった家具",
+    "面白いインテリア",
 
-for (let i = 0; i < 30; i++) {
-    rarities.push("SR");
-}
+    "世界の珍しい美術館",
+    "変わった美術作品",
+    "有名な絵画の意外な話",
+    "有名な彫刻の秘密",
+    "世界の変わった建築デザイン",
+    "一度見たら忘れない建物",
+    "世界の奇妙な形の建物",
+    "面白い広告の歴史",
+    "有名なCMの裏話",
+    "SNSで生まれた流行の由来"
 
-for (let i = 0; i < 12; i++) {
-    rarities.push("SSR");
-}
-
-for (let i = 0; i < 3; i++) {
-    rarities.push("UR");
-}
-
-
-/* =========================
-   お題データ作成
-   ========================= */
-
-const topics = topicTexts.map(function(text, index) {
-
-    return {
-        text: text,
-        rarity: rarities[index]
-    };
-
-});
-
-
-let currentTopic = null;
-let lastTopic = null;
-
-
-/* =========================
-   レアリティ抽選
-   ========================= */
-
-function getRarity() {
-
-    const r = Math.random() * 100;
-
-    if (r < 60) {
-        return "N";
-    }
-
-    if (r < 85) {
-        return "R";
-    }
-
-    if (r < 95) {
-        return "SR";
-    }
-
-    if (r < 99) {
-        return "SSR";
-    }
-
-    return "UR";
-}
+];
 
 
 /* =========================
-   ガチャ
-   ========================= */
+   50個を追加
+========================= */
 
-function gacha() {
-
-    const rarity = getRarity();
-
-    let candidates = topics.filter(function(topic) {
-
-        return topic.rarity === rarity;
-
-    });
+topics = topics.concat(extraTopics);
 
 
-    let availableCandidates =
-        candidates.filter(function(topic) {
+/* =========================
+   現在のお題
+========================= */
 
-            return topic.text !== lastTopic;
-
-        });
-
-
-    if (availableCandidates.length === 0) {
-
-        availableCandidates = candidates;
-
-    }
+let currentTopic = "";
 
 
-    const selected =
-        availableCandidates[
-            Math.floor(
-                Math.random() *
-                availableCandidates.length
-            )
-        ];
+/* =========================
+   ランダム検索
+========================= */
+
+function randomTopic() {
+
+    let newTopic;
 
 
-    currentTopic = selected;
-    lastTopic = selected.text;
+    do {
+
+        newTopic =
+            topics[
+                Math.floor(
+                    Math.random() * topics.length
+                )
+            ];
+
+    } while (
+        newTopic === currentTopic &&
+        topics.length > 1
+    );
+
+
+    currentTopic = newTopic;
 
 
     document.getElementById("topic").textContent =
-        selected.text;
-
-
-    const rarityElement =
-        document.getElementById("rarity");
-
-
-    rarityElement.textContent =
-        "【" + selected.rarity + "】";
-
-
-    rarityElement.className =
-        selected.rarity;
+        currentTopic;
 
 }
 
 
 /* =========================
    Google検索
-   ========================= */
+========================= */
 
 function searchGoogle() {
 
-    if (currentTopic === null) {
+    if (currentTopic === "") {
 
-        alert("先にガチャを回してください！");
+        randomTopic();
 
-        return;
     }
 
 
     const query =
-        encodeURIComponent(currentTopic.text);
+        encodeURIComponent(currentTopic);
 
 
     window.open(
@@ -375,7 +333,15 @@ function searchGoogle() {
 
 }
 
+
+/* =========================
+   ページを開いたとき
+   自動でランダム表示
+========================= */
+
+randomTopic();
+
 </script>
 
 </body>
-</html>
+</html>>
