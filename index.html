@@ -24,9 +24,7 @@ body {
     color: white;
     text-align: center;
     font-family: sans-serif;
-
     padding: 0 10px 40px;
-
     box-sizing: border-box;
 }
 
@@ -97,7 +95,6 @@ h1 {
     font-size: 30px;
     font-weight: bold;
     line-height: 1.5;
-
     width: 100%;
 }
 
@@ -145,6 +142,8 @@ h1 {
     -webkit-touch-callout: none;
 
     touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -182,7 +181,6 @@ h1 {
         font-size: 30px;
     }
 
-
     #result {
         height: 170px;
 
@@ -191,11 +189,9 @@ h1 {
         margin: 25px auto;
     }
 
-
     #topic {
         font-size: 26px;
     }
-
 
     #topSwipeText,
     #longPressText {
@@ -256,13 +252,12 @@ h1 {
 
 
 <!-- =========================
-     長押し操作
+     長押し説明
 ========================= -->
 
 <div id="longPressText">
     🔄 リロード長押しでランダム
 </div>
-
 
 
 <script>
@@ -466,9 +461,7 @@ function randomTopic() {
         newTopic === currentTopic
     );
 
-
     currentTopic = newTopic;
-
 
     document.getElementById(
         "topic"
@@ -489,12 +482,10 @@ function searchGoogle() {
 
     }
 
-
     const query =
         encodeURIComponent(
             currentTopic
         );
-
 
     window.open(
 
@@ -543,9 +534,12 @@ const reloadButton =
 
 reloadButton.addEventListener(
 
-    "click",
+    "pointerup",
 
-    function() {
+    function(e) {
+
+        e.preventDefault();
+        e.stopPropagation();
 
         randomTopic();
 
@@ -570,22 +564,16 @@ let longPressTimer = null;
 
 let repeatTimer = null;
 
-let longPressTriggered = false;
 
-
-/* 長押し開始 */
+/* =========================
+   長押し開始
+========================= */
 
 function startLongPress() {
-
-    longPressTriggered = false;
-
 
     longPressTimer = setTimeout(
 
         function() {
-
-            longPressTriggered = true;
-
 
             /*
                長押し開始時に
@@ -628,7 +616,9 @@ function startLongPress() {
 }
 
 
-/* 長押し終了 */
+/* =========================
+   長押し終了
+========================= */
 
 function stopLongPress() {
 
@@ -641,7 +631,6 @@ function stopLongPress() {
         longPressTimer = null;
 
     }
-
 
     if (repeatTimer) {
 
@@ -714,16 +703,14 @@ let touchStartY = 0;
 let swipeTriggered = false;
 
 
-/*
-   スワイプ距離
-*/
+/* スワイプ距離 */
 
 const swipeDistance = 45;
 
 
-/*
+/* =========================
    タッチ開始
-*/
+========================= */
 
 document.addEventListener(
 
@@ -739,13 +726,11 @@ document.addEventListener(
 
         }
 
-
         touchStartX =
             e.touches[0].clientX;
 
         touchStartY =
             e.touches[0].clientY;
-
 
         swipeTriggered = false;
 
@@ -758,9 +743,9 @@ document.addEventListener(
 );
 
 
-/*
+/* =========================
    タッチ終了
-*/
+========================= */
 
 document.addEventListener(
 
@@ -776,13 +761,11 @@ document.addEventListener(
 
         }
 
-
         const endX =
             e.changedTouches[0].clientX;
 
         const endY =
             e.changedTouches[0].clientY;
-
 
         const diffX =
             endX - touchStartX;
@@ -810,17 +793,4 @@ document.addEventListener(
         */
 
         if (
-            diffY >= swipeDistance &&
-            !swipeTriggered
-        ) {
-
-            swipeTriggered = true;
-
-
-            /*
-               0.1秒後
-            */
-
-            setTimeout(
-
-                function()
+            diffY >= s
