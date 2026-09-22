@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no">
+
 <title>🎰 ランダム検索</title>
 
 <style>
-html, body {
+
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -20,8 +26,6 @@ body {
     font-family: sans-serif;
     padding: 40px 10px;
     box-sizing: border-box;
-    touch-action: pan-y;
-    overscroll-behavior-x: none;
 }
 
 h1 {
@@ -33,9 +37,12 @@ h1 {
     background: #222;
     border: 3px solid #555;
     border-radius: 20px;
+
     padding: 50px 15px;
     margin: 30px auto;
+
     max-width: 900px;
+
     box-sizing: border-box;
 }
 
@@ -47,14 +54,20 @@ h1 {
 
 button {
     font-size: 22px;
+
     padding: 18px 28px;
     margin: 10px;
+
     border: none;
     border-radius: 14px;
+
     cursor: pointer;
+
     -webkit-user-select: none;
     user-select: none;
+
     -webkit-touch-callout: none;
+
     touch-action: manipulation;
 }
 
@@ -75,6 +88,7 @@ button {
 }
 
 @media screen and (max-width: 600px) {
+
     h1 {
         font-size: 30px;
     }
@@ -97,53 +111,142 @@ button {
         font-size: 16px;
     }
 }
+
 </style>
 </head>
+
 
 <body>
 
 <h1>🎰 ランダム検索</h1>
 
+
 <div id="result">
-    <div id="topic">？？？</div>
+
+    <div id="topic">
+        ？？？
+    </div>
+
 </div>
 
-<button id="reloadButton">🔄 リロード</button>
+
+<button id="reloadButton">
+    🔄 リロード
+</button>
+
 
 <br>
 
-<button id="searchButton" onclick="searchGoogle()">
+
+<button id="searchButton"
+        onclick="searchGoogle()">
+
     🔎 Googleで検索
+
 </button>
+
 
 <div id="swipeText">
     ⇩ 下にスワイプしてリロード
 </div>
 
+
+
 <script>
 
+
+/* =========================
+   お題
+========================= */
+
+
 const categories = [
-    "身近な科学","宇宙","動物","植物","食べ物","人体","心理学","歴史","地理","日本",
-    "世界","文化","音楽","映画","ゲーム","スポーツ","サッカー","テクノロジー",
-    "インターネット","乗り物","建物","仕事","お金","生活","料理","言葉","雑学",
-    "不思議","未来","ランキング"
+
+    "身近な科学",
+    "宇宙",
+    "動物",
+    "植物",
+    "食べ物",
+    "人体",
+    "心理学",
+    "歴史",
+    "地理",
+    "日本",
+
+    "世界",
+    "文化",
+    "音楽",
+    "映画",
+    "ゲーム",
+    "スポーツ",
+    "サッカー",
+    "テクノロジー",
+
+    "インターネット",
+    "乗り物",
+    "建物",
+    "仕事",
+    "お金",
+    "生活",
+    "料理",
+    "言葉",
+    "雑学",
+    "不思議",
+    "未来",
+    "ランキング"
+
 ];
 
+
 const subjects = [
-    "意外な事実","知られざる歴史","面白い仕組み","驚きの違い","意外な共通点",
-    "世界の珍しい例","昔と今の違い","最も○○なもの","身近だけど知らないこと",
+
+    "意外な事実",
+    "知られざる歴史",
+    "面白い仕組み",
+    "驚きの違い",
+    "意外な共通点",
+    "世界の珍しい例",
+    "昔と今の違い",
+    "最も○○なもの",
+    "身近だけど知らないこと",
     "検索すると面白いもの"
+
 ];
+
 
 let topics = [];
 
-for (let i = 0; i < categories.length; i++) {
-    for (let j = 0; j < subjects.length; j++) {
-        topics.push(categories[i] + "の" + subjects[j]);
+
+for (
+    let i = 0;
+    i < categories.length;
+    i++
+) {
+
+    for (
+        let j = 0;
+        j < subjects.length;
+        j++
+    ) {
+
+        topics.push(
+            categories[i] +
+            "の" +
+            subjects[j]
+        );
+
     }
+
 }
 
+
+/* =========================
+   追加50個
+========================= */
+
+
 const extraTopics = [
+
     "コンビニの人気商品ランキング",
     "コンビニでしか買えない商品",
     "コンビニ商品の意外な開発秘話",
@@ -154,6 +257,7 @@ const extraTopics = [
     "変わったインスタント食品",
     "世界の変わったパン",
     "意外な食べ物の組み合わせ",
+
     "世界の変わったホテル",
     "泊まってみたい珍しいホテル",
     "世界の面白い観光地",
@@ -164,6 +268,7 @@ const extraTopics = [
     "変わった形の駅",
     "世界の珍しい空港",
     "飛行機の意外な仕組み",
+
     "企業ロゴの意外な意味",
     "有名ブランドの名前の由来",
     "商品の名前の由来",
@@ -174,6 +279,7 @@ const extraTopics = [
     "意外と高価な家電",
     "変わった形の家電",
     "昔流行した便利グッズ",
+
     "世界の珍しいファッション",
     "昔のファッションの流行",
     "服の意外な名前の由来",
@@ -184,6 +290,7 @@ const extraTopics = [
     "世界の変わった筆記具",
     "変わった家具",
     "面白いインテリア",
+
     "世界の珍しい美術館",
     "変わった美術作品",
     "有名な絵画の意外な話",
@@ -193,265 +300,441 @@ const extraTopics = [
     "世界の奇妙な形の建物",
     "面白い広告の歴史",
     "有名なCMの裏話"
+
 ];
+
 
 topics = topics.concat(extraTopics);
 
+
+/* =========================
+   現在のお題
+========================= */
+
+
 let currentTopic = "";
-let reloadTimer = null;
-let longPressTimer = null;
-let repeatTimer = null;
-let longPressTriggered = false;
 
 
-/* -------------------------
+/* =========================
    振動
-------------------------- */
+========================= */
+
 
 function vibrate() {
+
     if (navigator.vibrate) {
-        navigator.vibrate([70, 30, 70]);
+
+        navigator.vibrate([
+            70,
+            30,
+            70
+        ]);
+
     }
+
 }
 
 
-/* -------------------------
-   ランダムお題
-------------------------- */
+/* =========================
+   ランダム
+========================= */
+
 
 function randomTopic() {
 
     let newTopic;
 
+
     do {
+
         newTopic =
-            topics[Math.floor(Math.random() * topics.length)];
-    } while (newTopic === currentTopic);
+            topics[
+                Math.floor(
+                    Math.random() *
+                    topics.length
+                )
+            ];
+
+    } while (
+        newTopic === currentTopic
+    );
+
 
     currentTopic = newTopic;
 
-    document.getElementById("topic").textContent =
-        currentTopic;
+
+    document.getElementById(
+        "topic"
+    ).textContent = currentTopic;
+
 
     vibrate();
+
 }
 
 
-/* -------------------------
-   0.6秒後にリロード
-------------------------- */
+/* =========================
+   0.4秒後にリロード
+========================= */
+
+
+let reloadTimer = null;
+
 
 function delayedReload() {
 
     if (reloadTimer) {
-        clearTimeout(reloadTimer);
+
+        clearTimeout(
+            reloadTimer
+        );
+
     }
 
-    reloadTimer = setTimeout(function() {
 
-        randomTopic();
+    reloadTimer = setTimeout(
 
-        reloadTimer = null;
+        function() {
 
-    }, 600);
+            randomTopic();
+
+            reloadTimer = null;
+
+        },
+
+        400
+
+    );
+
 }
 
 
-/* -------------------------
-   リロードボタン
-------------------------- */
+/* =========================
+   長押し
+========================= */
+
 
 const reloadButton =
-    document.getElementById("reloadButton");
+    document.getElementById(
+        "reloadButton"
+    );
+
+
+let longPressTimer = null;
+let repeatTimer = null;
+
+let longPressTriggered = false;
+
+
+/* 長押し開始 */
 
 
 function startLongPress() {
 
     longPressTriggered = false;
 
-    longPressTimer = setTimeout(function() {
 
-        longPressTriggered = true;
+    /*
+       0.6秒押し続けたら
+       連続回転開始
+    */
 
-        // 最初のリロード
-        randomTopic();
+    longPressTimer = setTimeout(
 
-        // 連続回転
-        repeatTimer = setInterval(function() {
+        function() {
+
+            longPressTriggered = true;
+
+
+            /*
+               最初の回転
+            */
 
             randomTopic();
 
-        }, 150);
 
-    }, 600);
+            /*
+               0.15秒ごとに回転
+            */
+
+            repeatTimer = setInterval(
+
+                function() {
+
+                    randomTopic();
+
+                },
+
+                150
+
+            );
+
+        },
+
+        600
+
+    );
+
 }
+
+
+/* 長押し終了 */
 
 
 function stopLongPress() {
 
     if (longPressTimer) {
-        clearTimeout(longPressTimer);
+
+        clearTimeout(
+            longPressTimer
+        );
+
         longPressTimer = null;
+
     }
 
+
     if (repeatTimer) {
-        clearInterval(repeatTimer);
+
+        clearInterval(
+            repeatTimer
+        );
+
         repeatTimer = null;
+
     }
+
 }
 
 
-/*
-   タップ・長押し
-*/
+/* =========================
+   ボタン操作
+========================= */
+
 
 reloadButton.addEventListener(
+
     "pointerdown",
+
     function(e) {
 
         e.preventDefault();
 
         startLongPress();
+
     }
+
 );
 
 
 reloadButton.addEventListener(
+
     "pointerup",
+
     function(e) {
 
         e.preventDefault();
 
         stopLongPress();
 
+
         /*
-           長押しではない場合だけ
-           0.6秒後に1回リロード
+           普通のタップなら
+           0.4秒後に1回
         */
 
         if (!longPressTriggered) {
+
             delayedReload();
+
         }
+
     }
+
 );
 
 
 reloadButton.addEventListener(
+
     "pointercancel",
+
     function() {
 
         stopLongPress();
+
     }
+
 );
 
 
-/* -------------------------
+/* =========================
    Google検索
-------------------------- */
+========================= */
+
 
 function searchGoogle() {
 
     if (currentTopic === "") {
+
         randomTopic();
+
     }
 
+
     const query =
-        encodeURIComponent(currentTopic);
+        encodeURIComponent(
+            currentTopic
+        );
+
 
     window.open(
-        "https://www.google.com/search?q=" + query,
+
+        "https://www.google.com/search?q=" +
+        query,
+
         "_blank"
+
     );
+
 }
 
 
-/* -------------------------
+/* =========================
    下スワイプ
-------------------------- */
+========================= */
+
 
 let touchStartX = 0;
 let touchStartY = 0;
 
-let isPulling = false;
+let swipeTriggered = false;
+
 
 /*
-   以前より約25%短くした距離
-   目安：45px
+   元の約75%
 */
 
 const swipeDistance = 45;
 
 
+/* タッチ開始 */
+
+
 document.addEventListener(
+
     "touchstart",
+
     function(e) {
 
-        if (e.touches.length !== 1) return;
+        if (
+            e.touches.length !== 1
+        ) {
 
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-
-        isPulling = false;
-    },
-    { passive: true }
-);
-
-
-document.addEventListener(
-    "touchmove",
-    function(e) {
-
-        if (e.touches.length !== 1) return;
-
-        const currentX =
-            e.touches[0].clientX;
-
-        const currentY =
-            e.touches[0].clientY;
-
-        const diffX =
-            currentX - touchStartX;
-
-        const diffY =
-            currentY - touchStartY;
-
-
-        /*
-           横方向の移動は無視。
-           これで左に引っ張られる感じを抑える。
-        */
-
-        if (Math.abs(diffX) > Math.abs(diffY)) {
             return;
+
         }
 
 
+        touchStartX =
+            e.touches[0].clientX;
+
+        touchStartY =
+            e.touches[0].clientY;
+
+
+        swipeTriggered = false;
+
+    },
+
+    {
+        passive: true
+    }
+
+);
+
+
+/* タッチ終了 */
+
+
+document.addEventListener(
+
+    "touchend",
+
+    function(e) {
+
+        if (
+            e.changedTouches.length !== 1
+        ) {
+
+            return;
+
+        }
+
+
+        const endX =
+            e.changedTouches[0].clientX;
+
+        const endY =
+            e.changedTouches[0].clientY;
+
+
+        const diffX =
+            endX - touchStartX;
+
+        const diffY =
+            endY - touchStartY;
+
+
         /*
-           下方向へのスワイプだけ判定
+           横移動が大きい場合は無視
         */
 
         if (
-            touchStartY < 100 &&
-            diffY > swipeDistance
+            Math.abs(diffY) <=
+            Math.abs(diffX)
         ) {
 
-            if (!isPulling) {
+            return;
 
-                isPulling = true;
-
-                delayedReload();
-            }
         }
+
+
+        /*
+           下方向45px以上
+        */
+
+        if (
+            diffY >= swipeDistance &&
+            !swipeTriggered
+        ) {
+
+            swipeTriggered = true;
+
+
+            /*
+               0.4秒後にリロード
+            */
+
+            delayedReload();
+
+        }
+
     },
-    { passive: true }
+
+    {
+        passive: true
+    }
+
 );
 
 
-/* -------------------------
+/* =========================
    初回表示
-------------------------- */
+========================= */
+
 
 randomTopic();
+
 
 </script>
 
