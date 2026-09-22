@@ -1,4 +1,4 @@
-><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -37,24 +37,39 @@ h1 {
     background: #222;
     border: 3px solid #555;
     border-radius: 20px;
-    padding: 50px 15px;
+
+    height: 180px;
+
+    padding: 30px 15px;
     margin: 30px auto;
+
     max-width: 900px;
+
     box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
 }
 
 #topic {
     font-size: 30px;
     font-weight: bold;
     line-height: 1.5;
+    width: 100%;
 }
 
 button {
     font-size: 22px;
+
     padding: 18px 28px;
     margin: 10px;
+
     border: none;
     border-radius: 14px;
+
     cursor: pointer;
 
     -webkit-user-select: none;
@@ -79,6 +94,7 @@ button {
     font-size: 18px;
     color: #aaa;
     margin-top: 35px;
+    line-height: 1.8;
 }
 
 @media screen and (max-width: 600px) {
@@ -88,7 +104,8 @@ button {
     }
 
     #result {
-        padding: 45px 12px;
+        height: 170px;
+        padding: 25px 12px;
         margin: 25px auto;
     }
 
@@ -142,7 +159,8 @@ button {
 
 
 <div id="swipeText">
-    ⇩ 下にスワイプしてリロード
+    ⇩ 下にスワイプしてリロード<br>
+    🔄 リロード長押しでランダム
 </div>
 
 
@@ -364,45 +382,37 @@ function randomTopic() {
 
 /* =========================
    通常タップ
-   0.1秒後
+   即時
 ========================= */
-
-let tapTimer = null;
 
 function delayedTapReload() {
 
-    if (tapTimer) {
-        clearTimeout(tapTimer);
-    }
-
-    tapTimer = setTimeout(
-        function() {
-
-            randomTopic();
-
-            tapTimer = null;
-
-        },
-        100
-    );
+    randomTopic();
 
 }
 
 
 /* =========================
    スワイプ
-   0.4秒後
+   0.2秒後
 ========================= */
 
 let swipeTimer = null;
 
+
 function delayedSwipeReload() {
 
     if (swipeTimer) {
-        clearTimeout(swipeTimer);
+
+        clearTimeout(
+            swipeTimer
+        );
+
     }
 
+
     swipeTimer = setTimeout(
+
         function() {
 
             randomTopic();
@@ -410,7 +420,9 @@ function delayedSwipeReload() {
             swipeTimer = null;
 
         },
-        400
+
+        200
+
     );
 
 }
@@ -428,6 +440,7 @@ const reloadButton =
 
 
 let longPressTimer = null;
+
 let repeatTimer = null;
 
 let longPressTriggered = false;
@@ -438,39 +451,40 @@ function startLongPress() {
     longPressTriggered = false;
 
 
-    /*
-       0.2秒押したら
-       連続回転開始
-    */
-
     longPressTimer = setTimeout(
+
         function() {
 
             longPressTriggered = true;
 
 
             /*
-               最初の回転
+               最初のランダム
             */
 
             randomTopic();
 
 
             /*
-               0.15秒ごとに回転
+               0.15秒ごとにランダム
             */
 
             repeatTimer = setInterval(
+
                 function() {
 
                     randomTopic();
 
                 },
+
                 150
+
             );
 
         },
+
         200
+
     );
 
 }
@@ -507,7 +521,9 @@ function stopLongPress() {
 ========================= */
 
 reloadButton.addEventListener(
+
     "pointerdown",
+
     function(e) {
 
         e.preventDefault();
@@ -515,11 +531,14 @@ reloadButton.addEventListener(
         startLongPress();
 
     }
+
 );
 
 
 reloadButton.addEventListener(
+
     "pointerup",
+
     function(e) {
 
         e.preventDefault();
@@ -529,7 +548,7 @@ reloadButton.addEventListener(
 
         /*
            長押しではなかったら
-           0.1秒後に1回
+           即時に1回
         */
 
         if (!longPressTriggered) {
@@ -539,16 +558,20 @@ reloadButton.addEventListener(
         }
 
     }
+
 );
 
 
 reloadButton.addEventListener(
+
     "pointercancel",
+
     function() {
 
         stopLongPress();
 
     }
+
 );
 
 
@@ -572,9 +595,12 @@ function searchGoogle() {
 
 
     window.open(
+
         "https://www.google.com/search?q=" +
         query,
+
         "_blank"
+
     );
 
 }
@@ -585,13 +611,14 @@ function searchGoogle() {
 ========================= */
 
 let touchStartX = 0;
+
 let touchStartY = 0;
 
 let swipeTriggered = false;
 
 
 /*
-   以前の約75%
+   元の約75%
 */
 
 const swipeDistance = 45;
@@ -600,7 +627,9 @@ const swipeDistance = 45;
 /* タッチ開始 */
 
 document.addEventListener(
+
     "touchstart",
+
     function(e) {
 
         if (
@@ -622,16 +651,20 @@ document.addEventListener(
         swipeTriggered = false;
 
     },
+
     {
         passive: true
     }
+
 );
 
 
 /* タッチ終了 */
 
 document.addEventListener(
+
     "touchend",
+
     function(e) {
 
         if (
@@ -682,19 +715,16 @@ document.addEventListener(
 
             swipeTriggered = true;
 
-
-            /*
-               0.2秒後
-            */
-
             delayedSwipeReload();
 
         }
 
     },
+
     {
         passive: true
     }
+
 );
 
 
@@ -703,6 +733,7 @@ document.addEventListener(
 ========================= */
 
 randomTopic();
+
 
 </script>
 
