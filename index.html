@@ -80,39 +80,41 @@ button {
 
 /* =========================
    スマホ用
+   現在の約半分
    ========================= */
 
 @media (max-width: 600px) {
 
     body {
-        padding: 20px 8px;
+        padding: 10px 5px;
     }
 
     h1 {
-        font-size: 21px;
+        font-size: 16px;
+        margin: 10px 0;
     }
 
     #result {
-        padding: 39px 10px;
-        margin: 20px auto;
-        border-radius: 13px;
-        border-width: 3px;
+        padding: 20px 6px;
+        margin: 15px auto;
+        border-radius: 10px;
+        border-width: 2px;
     }
 
     #topic {
-        font-size: 21px;
-        margin-bottom: 13px;
+        font-size: 16px;
+        margin-bottom: 8px;
     }
 
     #rarity {
-        font-size: 18px;
+        font-size: 14px;
     }
 
     button {
-        font-size: 16px;
-        padding: 12px 20px;
-        margin: 7px;
-        border-radius: 10px;
+        font-size: 12px;
+        padding: 8px 12px;
+        margin: 5px;
+        border-radius: 7px;
     }
 }
 
@@ -302,8 +304,6 @@ function gacha() {
     });
 
 
-    /* 前回と同じお題を避ける */
-
     let availableCandidates =
         candidates.filter(function(topic) {
 
@@ -332,13 +332,9 @@ function gacha() {
     lastTopic = selected.text;
 
 
-    /* お題表示 */
-
     document.getElementById("topic").textContent =
         selected.text;
 
-
-    /* レアリティ表示 */
 
     const rarityElement =
         document.getElementById("rarity");
@@ -382,4 +378,4 @@ function searchGoogle() {
 </script>
 
 </body>
-</html>
+</html>>
