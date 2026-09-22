@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>検索ガチャ</title>
+
+<style>
+body {
+    background: #111;
+    color: white;
+    text-align: center;
+    font-family: sans-serif;
+    padding: 40px 10px;
+}
+
+#result {
+    background: #222;
+    border: 2px solid #555;
+    border-radius: 15px;
+    padding: 40px 10px;
+    margin: 30px auto;
+    max-width: 600px;
+}
+
+#topic {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#rarity {
+    font-size: 22px;
+}
+
+button {
+    font-size: 20px;
+    padding: 15px 30px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+}
+
+#gachaButton {
+    background: #555;
+    color: white;
+}
+
+#searchButton {
+    background: #4285f4;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎰 検索ガチャ</h1>
+
+<div id="result">
+    <div id="topic">？？？</div>
+    <div id="rarity">---</div>
+</div>
+
+<button id="gachaButton">🎲 ガチャを回す</button>
+
+<br>
+
+<button id="searchButton">🔎 Googleで検索</button>
+
+
+<script>
+
+const topics = [
+    { text: "宇宙の不思議", rarity: "N" },
+    { text: "深海生物", rarity: "N" },
+    { text: "珍しい動物", rarity: "N" },
+    { text: "変わった食べ物", rarity: "N" },
+    { text: "世界の祭り", rarity: "N" },
+
+    { text: "AI", rarity: "R" },
+    { text: "ロボット", rarity: "R" },
+    { text: "都市伝説", rarity: "R" },
+    { text: "未解決事件", rarity: "R" },
+    { text: "UFO", rarity: "R" },
+
+    { text: "シンギュラリティ", rarity: "SR" },
+    { text: "自由意志", rarity: "SR" },
+    { text: "人間とは何か", rarity: "SR" },
+
+    { text: "宇宙の外側", rarity: "SSR" },
+    { text: "シミュレーション仮説", rarity: "SSR" },
+
+    { text: "現実の正体", rarity: "UR" }
+];
+
+let currentTopic = null;
+
+
+// レアリティ抽選
+function getRarity() {
+
+    const r = Math.random() * 100;
+
+    if (r < 60) return "N";
+    if (r < 85) return "R";
+    if (r < 95) return "SR";
+    if (r < 99) return "SSR";
+    return "UR";
+}
+
+
+// ガチャボタン
+document.getElementById("gachaButton").addEventListener("click", function() {
+
+    const rarity = getRarity();
+
+    const candidates = topics.filter(function(topic) {
+        return topic.rarity === rarity;
+    });
+
+    currentTopic =
+        candidates[Math.floor(Math.random() * candidates.length)];
+
+    document.getElementById("topic").textContent =
+        currentTopic.text;
+
+    document.getElementById("rarity").textContent =
+        "【" + currentTopic.rarity + "】";
+
+});
+
+
+// Google検索
+document.getElementById("searchButton").addEventListener("click", function() {
+
+    if (currentTopic === null) {
+        alert("先にガチャを回してください！");
+        return;
+    }
+
+    const query = encodeURIComponent(currentTopic.text);
+
+    window.open(
+        "https://www.google.com/search?q=" + query,
+        "_blank"
+    );
+
+});
+
+</script>
+
+</body>
+</html>
