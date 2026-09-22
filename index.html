@@ -1,4 +1,4 @@
-M<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 
 <head>
@@ -33,11 +33,6 @@ h1 {
     margin-bottom: 30px;
 }
 
-
-/* =========================
-   お題表示
-========================= */
-
 #result {
     background: #222;
     border: 3px solid #555;
@@ -45,7 +40,7 @@ h1 {
 
     height: 180px;
 
-    padding: 30px 45px 30px 15px;
+    padding: 30px 15px;
     margin: 30px auto;
 
     max-width: 900px;
@@ -57,19 +52,7 @@ h1 {
     justify-content: center;
 
     overflow: hidden;
-
-    position: relative;
-
-    cursor: pointer;
-
-    -webkit-user-select: none;
-    user-select: none;
-
-    touch-action: manipulation;
 }
-
-
-/* お題 */
 
 #topic {
     font-size: 30px;
@@ -77,42 +60,6 @@ h1 {
     line-height: 1.5;
     width: 100%;
 }
-
-
-/* =========================
-   検索矢印
-========================= */
-
-#searchIcon {
-    position: absolute;
-
-    right: 12px;
-    bottom: 10px;
-
-    width: 32px;
-    height: 32px;
-
-    border-radius: 50%;
-
-    background: #4285f4;
-    color: white;
-
-    font-size: 20px;
-    font-weight: bold;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    opacity: 0.9;
-
-    pointer-events: none;
-}
-
-
-/* =========================
-   リロードボタン
-========================= */
 
 button {
     font-size: 22px;
@@ -138,10 +85,10 @@ button {
     color: white;
 }
 
-
-/* =========================
-   説明
-========================= */
+#searchButton {
+    background: #4285f4;
+    color: white;
+}
 
 #swipeText {
     font-size: 18px;
@@ -149,11 +96,6 @@ button {
     margin-top: 35px;
     line-height: 1.8;
 }
-
-
-/* =========================
-   スマホ
-========================= */
 
 @media screen and (max-width: 600px) {
 
@@ -163,24 +105,12 @@ button {
 
     #result {
         height: 170px;
-
-        padding: 25px 42px 25px 12px;
-
+        padding: 25px 12px;
         margin: 25px auto;
     }
 
     #topic {
         font-size: 26px;
-    }
-
-    #searchIcon {
-        width: 28px;
-        height: 28px;
-
-        right: 10px;
-        bottom: 8px;
-
-        font-size: 17px;
     }
 
     button {
@@ -197,16 +127,9 @@ button {
 </style>
 </head>
 
-
 <body>
 
 <h1>🎰 ランダム検索</h1>
-
-
-<!-- =========================
-     お題
-     タップでGoogle検索
-========================= -->
 
 <div id="result">
 
@@ -214,31 +137,27 @@ button {
         ？？？
     </div>
 
-    <div id="searchIcon">
-        ↗
-    </div>
-
 </div>
-
-
-<!-- =========================
-     リロード
-========================= -->
 
 <button id="reloadButton">
     🔄 リロード
 </button>
 
+<br>
+
+<button id="searchButton"
+        onclick="searchGoogle()">
+
+    🔎 Googleで検索
+
+</button>
 
 <div id="swipeText">
     ⇩ 下にスワイプしてリロード<br>
     🔄 リロード長押しでランダム
 </div>
 
-
-
 <script>
-
 
 /* =========================
    お題
@@ -281,7 +200,6 @@ const categories = [
 
 ];
 
-
 const subjects = [
 
     "意外な事実",
@@ -297,9 +215,7 @@ const subjects = [
 
 ];
 
-
 let topics = [];
-
 
 for (
     let i = 0;
@@ -322,7 +238,6 @@ for (
     }
 
 }
-
 
 /* =========================
    追加50個
@@ -386,16 +301,13 @@ const extraTopics = [
 
 ];
 
-
 topics = topics.concat(extraTopics);
-
 
 /* =========================
    現在のお題
 ========================= */
 
 let currentTopic = "";
-
 
 /* =========================
    振動
@@ -415,9 +327,9 @@ function vibrate() {
 
 }
 
-
 /* =========================
    ランダムお題
+   通常用
 ========================= */
 
 function randomTopic() {
@@ -438,9 +350,7 @@ function randomTopic() {
         newTopic === currentTopic
     );
 
-
     currentTopic = newTopic;
-
 
     document.getElementById(
         "topic"
@@ -448,9 +358,9 @@ function randomTopic() {
 
 }
 
-
 /* =========================
    通常タップ
+   即時＋振動
 ========================= */
 
 function reloadOnce() {
@@ -461,9 +371,9 @@ function reloadOnce() {
 
 }
 
-
 /* =========================
-   長押し中
+   長押し中のランダム
+   振動なし
 ========================= */
 
 function randomWithoutVibration() {
@@ -472,9 +382,44 @@ function randomWithoutVibration() {
 
 }
 
+/* =========================
+   スワイプ
+   0.2秒後＋振動
+========================= */
+
+let swipeTimer = null;
+
+function delayedSwipeReload() {
+
+    if (swipeTimer) {
+
+        clearTimeout(
+            swipeTimer
+        );
+
+    }
+
+    swipeTimer = setTimeout(
+
+        function() {
+
+            randomTopic();
+
+            vibrate();
+
+            swipeTimer = null;
+
+        },
+
+        200
+
+    );
+
+}
 
 /* =========================
    長押し
+   0.2秒で開始
 ========================= */
 
 const reloadButton =
@@ -482,18 +427,15 @@ const reloadButton =
         "reloadButton"
     );
 
-
 let longPressTimer = null;
 
 let repeatTimer = null;
 
 let longPressTriggered = false;
 
-
 function startLongPress() {
 
     longPressTriggered = false;
-
 
     longPressTimer = setTimeout(
 
@@ -501,18 +443,23 @@ function startLongPress() {
 
             longPressTriggered = true;
 
-
-            /* 長押し開始時だけ振動 */
+            /*
+               長押し開始時に
+               1回だけ振動
+            */
 
             vibrate();
 
-
-            /* 最初のお題 */
+            /*
+               最初のお題変更
+            */
 
             randomWithoutVibration();
 
-
-            /* 0.15秒ごとに変更 */
+            /*
+               0.15秒ごとに
+               振動なしでランダム
+            */
 
             repeatTimer = setInterval(
 
@@ -534,7 +481,6 @@ function startLongPress() {
 
 }
 
-
 function stopLongPress() {
 
     if (longPressTimer) {
@@ -547,7 +493,6 @@ function stopLongPress() {
 
     }
 
-
     if (repeatTimer) {
 
         clearInterval(
@@ -559,7 +504,6 @@ function stopLongPress() {
     }
 
 }
-
 
 /* =========================
    リロードボタン操作
@@ -579,7 +523,6 @@ reloadButton.addEventListener(
 
 );
 
-
 reloadButton.addEventListener(
 
     "pointerup",
@@ -590,6 +533,10 @@ reloadButton.addEventListener(
 
         stopLongPress();
 
+        /*
+           長押しではなかったら
+           即時に1回＋振動
+        */
 
         if (!longPressTriggered) {
 
@@ -600,7 +547,6 @@ reloadButton.addEventListener(
     }
 
 );
-
 
 reloadButton.addEventListener(
 
@@ -614,10 +560,8 @@ reloadButton.addEventListener(
 
 );
 
-
 /* =========================
    Google検索
-   お題タップ
 ========================= */
 
 function searchGoogle() {
@@ -628,12 +572,10 @@ function searchGoogle() {
 
     }
 
-
     const query =
         encodeURIComponent(
             currentTopic
         );
-
 
     window.open(
 
@@ -646,30 +588,6 @@ function searchGoogle() {
 
 }
 
-
-/* =========================
-   お題タップで検索
-========================= */
-
-const result =
-    document.getElementById(
-        "result"
-    );
-
-
-result.addEventListener(
-
-    "click",
-
-    function() {
-
-        searchGoogle();
-
-    }
-
-);
-
-
 /* =========================
    下スワイプ
 ========================= */
@@ -680,13 +598,11 @@ let touchStartY = 0;
 
 let swipeTriggered = false;
 
-let swipeTimer = null;
-
-
-/* スワイプ距離 */
+/*
+   元の約75%
+*/
 
 const swipeDistance = 45;
-
 
 /* タッチ開始 */
 
@@ -704,13 +620,11 @@ document.addEventListener(
 
         }
 
-
         touchStartX =
             e.touches[0].clientX;
 
         touchStartY =
             e.touches[0].clientY;
-
 
         swipeTriggered = false;
 
@@ -721,7 +635,6 @@ document.addEventListener(
     }
 
 );
-
 
 /* タッチ終了 */
 
@@ -739,13 +652,11 @@ document.addEventListener(
 
         }
 
-
         const endX =
             e.changedTouches[0].clientX;
 
         const endY =
             e.changedTouches[0].clientY;
-
 
         const diffX =
             endX - touchStartX;
@@ -753,8 +664,9 @@ document.addEventListener(
         const diffY =
             endY - touchStartY;
 
-
-        /* 横移動が大きければ無視 */
+        /*
+           横移動が大きい場合は無視
+        */
 
         if (
             Math.abs(diffY) <=
@@ -765,8 +677,9 @@ document.addEventListener(
 
         }
 
-
-        /* 下方向45px以上 */
+        /*
+           下方向45px以上
+        */
 
         if (
             diffY >= swipeDistance &&
@@ -775,35 +688,7 @@ document.addEventListener(
 
             swipeTriggered = true;
 
-
-            /*
-               0.1秒後にリロード
-            */
-
-            if (swipeTimer) {
-
-                clearTimeout(
-                    swipeTimer
-                );
-
-            }
-
-
-            swipeTimer = setTimeout(
-
-                function() {
-
-                    randomTopic();
-
-                    vibrate();
-
-                    swipeTimer = null;
-
-                },
-
-                100
-
-            );
+            delayedSwipeReload();
 
         }
 
@@ -815,5 +700,13 @@ document.addEventListener(
 
 );
 
+/* =========================
+   初回表示
+========================= */
 
-/* ========================
+randomTopic();
+
+</script>
+
+</body>
+</html>
