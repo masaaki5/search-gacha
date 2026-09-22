@@ -24,7 +24,9 @@ body {
     color: white;
     text-align: center;
     font-family: sans-serif;
+
     padding: 0 10px 40px;
+
     box-sizing: border-box;
 }
 
@@ -95,6 +97,7 @@ h1 {
     font-size: 30px;
     font-weight: bold;
     line-height: 1.5;
+
     width: 100%;
 }
 
@@ -181,6 +184,7 @@ h1 {
         font-size: 30px;
     }
 
+
     #result {
         height: 170px;
 
@@ -189,9 +193,11 @@ h1 {
         margin: 25px auto;
     }
 
+
     #topic {
         font-size: 26px;
     }
+
 
     #topSwipeText,
     #longPressText {
@@ -246,7 +252,7 @@ h1 {
      リロードボタン
 ========================= -->
 
-<button id="reloadButton">
+<button id="reloadButton" type="button">
     🔄 リロード
 </button>
 
@@ -461,7 +467,9 @@ function randomTopic() {
         newTopic === currentTopic
     );
 
+
     currentTopic = newTopic;
+
 
     document.getElementById(
         "topic"
@@ -482,18 +490,16 @@ function searchGoogle() {
 
     }
 
+
     const query =
         encodeURIComponent(
             currentTopic
         );
 
+
     window.open(
-
-        "https://www.google.com/search?q=" +
-        query,
-
+        "https://www.google.com/search?q=" + query,
         "_blank"
-
     );
 
 }
@@ -510,15 +516,12 @@ const result =
 
 
 result.addEventListener(
-
     "click",
-
     function() {
 
         searchGoogle();
 
     }
-
 );
 
 
@@ -533,20 +536,16 @@ const reloadButton =
 
 
 reloadButton.addEventListener(
-
     "pointerup",
-
     function(e) {
 
         e.preventDefault();
         e.stopPropagation();
 
         randomTopic();
-
         vibrate();
 
     }
-
 );
 
 
@@ -561,7 +560,6 @@ const longPressText =
 
 
 let longPressTimer = null;
-
 let repeatTimer = null;
 
 
@@ -570,6 +568,9 @@ let repeatTimer = null;
 ========================= */
 
 function startLongPress() {
+
+    stopLongPress();
+
 
     longPressTimer = setTimeout(
 
@@ -622,7 +623,7 @@ function startLongPress() {
 
 function stopLongPress() {
 
-    if (longPressTimer) {
+    if (longPressTimer !== null) {
 
         clearTimeout(
             longPressTimer
@@ -632,7 +633,8 @@ function stopLongPress() {
 
     }
 
-    if (repeatTimer) {
+
+    if (repeatTimer !== null) {
 
         clearInterval(
             repeatTimer
@@ -650,9 +652,7 @@ function stopLongPress() {
 ========================= */
 
 longPressText.addEventListener(
-
     "pointerdown",
-
     function(e) {
 
         e.preventDefault();
@@ -660,14 +660,11 @@ longPressText.addEventListener(
         startLongPress();
 
     }
-
 );
 
 
 longPressText.addEventListener(
-
     "pointerup",
-
     function(e) {
 
         e.preventDefault();
@@ -675,20 +672,26 @@ longPressText.addEventListener(
         stopLongPress();
 
     }
-
 );
 
 
 longPressText.addEventListener(
-
     "pointercancel",
-
     function() {
 
         stopLongPress();
 
     }
+);
 
+
+longPressText.addEventListener(
+    "pointerleave",
+    function() {
+
+        stopLongPress();
+
+    }
 );
 
 
@@ -697,9 +700,7 @@ longPressText.addEventListener(
 ========================= */
 
 let touchStartX = 0;
-
 let touchStartY = 0;
-
 let swipeTriggered = false;
 
 
@@ -713,9 +714,7 @@ const swipeDistance = 45;
 ========================= */
 
 document.addEventListener(
-
     "touchstart",
-
     function(e) {
 
         if (
@@ -726,6 +725,7 @@ document.addEventListener(
 
         }
 
+
         touchStartX =
             e.touches[0].clientX;
 
@@ -735,11 +735,9 @@ document.addEventListener(
         swipeTriggered = false;
 
     },
-
     {
         passive: true
     }
-
 );
 
 
@@ -748,9 +746,7 @@ document.addEventListener(
 ========================= */
 
 document.addEventListener(
-
     "touchend",
-
     function(e) {
 
         if (
@@ -761,11 +757,13 @@ document.addEventListener(
 
         }
 
+
         const endX =
             e.changedTouches[0].clientX;
 
         const endY =
             e.changedTouches[0].clientY;
+
 
         const diffX =
             endX - touchStartX;
@@ -780,17 +778,4 @@ document.addEventListener(
 
         if (
             Math.abs(diffY) <=
-            Math.abs(diffX)
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-           下方向45px以上
-        */
-
-        if (
-            diffY >= s
+            M
