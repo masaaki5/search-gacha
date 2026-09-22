@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>検索ガチャ</title>
 
 <style>
@@ -10,34 +11,39 @@ body {
     color: white;
     text-align: center;
     font-family: sans-serif;
-    padding: 40px 10px;
+    padding: 80px 20px;
+}
+
+h1 {
+    font-size: 48px;
 }
 
 #result {
     background: #222;
-    border: 2px solid #555;
-    border-radius: 15px;
-    padding: 40px 10px;
-    margin: 30px auto;
-    max-width: 600px;
+    border: 4px solid #555;
+    border-radius: 30px;
+    padding: 100px 20px;
+    margin: 60px auto;
+    max-width: 900px;
 }
 
 #topic {
-    font-size: 28px;
+    font-size: 56px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 }
 
 #rarity {
-    font-size: 22px;
+    font-size: 44px;
 }
 
 button {
-    font-size: 20px;
-    padding: 15px 30px;
-    margin: 10px;
+    font-size: 40px;
+    padding: 30px 60px;
+    margin: 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 20px;
+    cursor: pointer;
 }
 
 #gachaButton {
@@ -48,6 +54,27 @@ button {
 #searchButton {
     background: #4285f4;
     color: white;
+}
+
+/* レア度の色 */
+.N {
+    color: white;
+}
+
+.R {
+    color: #4285f4;
+}
+
+.SR {
+    color: red;
+}
+
+.SSR {
+    color: silver;
+}
+
+.UR {
+    color: gold;
 }
 </style>
 </head>
@@ -61,91 +88,201 @@ button {
     <div id="rarity">---</div>
 </div>
 
-<button id="gachaButton">🎲 ガチャを回す</button>
+<button id="gachaButton" onclick="gacha()">🎲 ガチャを回す</button>
 
 <br>
 
-<button id="searchButton">🔎 Googleで検索</button>
-
+<button id="searchButton" onclick="searchGoogle()">🔎 Googleで検索</button>
 
 <script>
 
-const topics = [
-    { text: "宇宙の不思議", rarity: "N" },
-    { text: "深海生物", rarity: "N" },
-    { text: "珍しい動物", rarity: "N" },
-    { text: "変わった食べ物", rarity: "N" },
-    { text: "世界の祭り", rarity: "N" },
+/* =========================
+   お題300個
+   ========================= */
 
-    { text: "AI", rarity: "R" },
-    { text: "ロボット", rarity: "R" },
-    { text: "都市伝説", rarity: "R" },
-    { text: "未解決事件", rarity: "R" },
-    { text: "UFO", rarity: "R" },
-
-    { text: "シンギュラリティ", rarity: "SR" },
-    { text: "自由意志", rarity: "SR" },
-    { text: "人間とは何か", rarity: "SR" },
-
-    { text: "宇宙の外側", rarity: "SSR" },
-    { text: "シミュレーション仮説", rarity: "SSR" },
-
-    { text: "現実の正体", rarity: "UR" }
+const categories = [
+    "身近な科学",
+    "宇宙",
+    "動物",
+    "植物",
+    "食べ物",
+    "人体",
+    "心理学",
+    "歴史",
+    "地理",
+    "日本",
+    "世界",
+    "文化",
+    "音楽",
+    "映画",
+    "ゲーム",
+    "スポーツ",
+    "サッカー",
+    "テクノロジー",
+    "インターネット",
+    "乗り物",
+    "建物",
+    "仕事",
+    "お金",
+    "生活",
+    "料理",
+    "言葉",
+    "雑学",
+    "不思議",
+    "未来",
+    "ランキング"
 ];
 
-let currentTopic = null;
+const subjects = [
+    "意外な事実",
+    "知られざる歴史",
+    "面白い仕組み",
+    "驚きの違い",
+    "意外な共通点",
+    "世界の珍しい例",
+    "昔と今の違い",
+    "最も○○なもの",
+    "身近だけど知らないこと",
+    "検索すると面白いもの"
+];
 
+let topics = [];
 
-// レアリティ抽選
-function getRarity() {
-
-    const r = Math.random() * 100;
-
-    if (r < 60) return "N";
-    if (r < 85) return "R";
-    if (r < 95) return "SR";
-    if (r < 99) return "SSR";
-    return "UR";
+for (let i = 0; i < categories.length; i++) {
+    for (let j = 0; j < subjects.length; j++) {
+        topics.push(
+            categories[i] + "の" + subjects[j]
+        );
+    }
 }
 
+/*
+300個を
+N  180個
+R   75個
+SR  30個
+SSR 12個
+UR   3個
+に設定
 
-// ガチャボタン
-document.getElementById("gachaButton").addEventListener("click", function() {
+→ 全体の割合
+N   60%
+R   25%
+SR  10%
+SSR  4%
+UR   1%
+*/
 
-    const rarity = getRarity();
+const rarities = [];
 
-    const candidates = topics.filter(function(topic) {
-        return topic.rarity === rarity;
-    });
+for (let i = 0; i < 180; i++) {
+    rarities.push("N");
+}
 
-    currentTopic =
-        candidates[Math.floor(Math.random() * candidates.length)];
+for (let i = 0; i < 75; i++) {
+    rarities.push("R");
+}
 
-    document.getElementById("topic").textContent =
-        currentTopic.text;
+for (let i = 0; i < 30; i++) {
+    rarities.push("SR");
+}
 
-    document.getElementById("rarity").textContent =
-        "【" + currentTopic.rarity + "】";
+for (let i = 0; i < 12; i++) {
+    rarities.push("SSR");
+}
 
+for (let i = 0; i < 3; i++) {
+    rarities.push("UR");
+}
+
+topics = topics.map(function(text, index) {
+    return {
+        text: text,
+        rarity: rarities[index]
+    };
 });
 
 
-// Google検索
-document.getElementById("searchButton").addEventListener("click", function() {
+let currentTopic = null;
+let lastTopic = null;
+
+
+/* =========================
+   ガチャ
+   ========================= */
+
+function gacha() {
+
+    let rarity;
+
+    const r = Math.random() * 100;
+
+    if (r < 60) {
+        rarity = "N";
+    } else if (r < 85) {
+        rarity = "R";
+    } else if (r < 95) {
+        rarity = "SR";
+    } else if (r < 99) {
+        rarity = "SSR";
+    } else {
+        rarity = "UR";
+    }
+
+    let candidates = topics.filter(function(topic) {
+        return topic.rarity === rarity;
+    });
+
+    /*
+    前回と同じお題が連続しないようにする
+    */
+    let available = candidates.filter(function(topic) {
+        return topic.text !== lastTopic;
+    });
+
+    if (available.length === 0) {
+        available = candidates;
+    }
+
+    const selected =
+        available[Math.floor(Math.random() * available.length)];
+
+    currentTopic = selected;
+    lastTopic = selected.text;
+
+    document.getElementById("topic").textContent =
+        selected.text;
+
+    const rarityElement =
+        document.getElementById("rarity");
+
+    rarityElement.textContent =
+        "【" + selected.rarity + "】";
+
+    rarityElement.className =
+        selected.rarity;
+}
+
+
+/* =========================
+   Google検索
+   ========================= */
+
+function searchGoogle() {
 
     if (currentTopic === null) {
         alert("先にガチャを回してください！");
         return;
     }
 
-    const query = encodeURIComponent(currentTopic.text);
+    const query =
+        encodeURIComponent(currentTopic.text);
 
     window.open(
         "https://www.google.com/search?q=" + query,
         "_blank"
     );
-
-});
+}
 
 </script>
 
